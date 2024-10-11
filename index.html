@@ -49,20 +49,7 @@
         xmlns="http://www.w3.org/2000/svg"
         id="mySVG"
       >
-        <path
-          id="dynamicPath"
-          d="
-      M 0 0 
-      L 500 0 
-      L 500 400 
-      Q 500 370 470 370 
-      L 60 370 
-      Q 30 370 30 340 
-      L 30 30 
-      Q 30 0 0 0 
-    "
-          fill="#333"
-        />
+        <path id="dynamicPath" d="" fill="#333" />
       </svg>
       <div class="content">
         <button class="pre-order-button">PRE-ORDER <span>⚙️</span></button>
@@ -93,15 +80,16 @@
       }
 
       // Обновляем путь при загрузке и изменении размеров окна
-      // window.addEventListener("load", updatePath);
-      // window.addEventListener("resize", updatePath);
+      window.addEventListener("load", updatePath);
+      window.addEventListener("resize", updatePath);
 
       const changeSizeButton = document.getElementById("changeSize");
       changeSizeButton.addEventListener("click", () => {
         const randomSize = [
           [300, 200],
           [400, 300],
-          [500, 400],
+          [500, 200],
+          [200, 500],
         ][Math.floor(Math.random() * 3)];
         const container = document.querySelector(".container");
         container.style.width = `${randomSize[0]}px`;
