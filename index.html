@@ -7,9 +7,23 @@
   </head>
   <body>
     <style>
-      .container {
+      body {
+        background-color: #333;
+      }
+      .wrapper {
+        margin: 0 auto;
         position: relative;
-        background-color: #666;
+        width: 90vw;
+        height: 80vh;
+        background-color: #1f72f9;
+        border-radius: 20px;
+      }
+
+      .container {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background-color: transparent;
         width: 500px;
         height: 400px;
       }
@@ -43,16 +57,18 @@
         gap: 5px;
       }
     </style>
-    <div class="container">
-      <svg
-        class="responsive-svg svg-background"
-        xmlns="http://www.w3.org/2000/svg"
-        id="mySVG"
-      >
-        <path id="dynamicPath" d="" fill="#333" />
-      </svg>
-      <div class="content">
-        <button class="pre-order-button">PRE-ORDER <span>⚙️</span></button>
+    <div class="wrapper">
+      <div class="container">
+        <svg
+          class="responsive-svg svg-background"
+          xmlns="http://www.w3.org/2000/svg"
+          id="mySVG"
+        >
+          <path id="dynamicPath" d="" fill="#333" />
+        </svg>
+        <div class="content">
+          <button class="pre-order-button">PRE-ORDER <span>⚙️</span></button>
+        </div>
       </div>
     </div>
     <button type="button" id="changeSize">Change size</button>
