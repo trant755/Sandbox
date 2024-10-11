@@ -1,0 +1,166 @@
+<style>
+  .fildset {
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+  .form_page_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 32px;
+    padding: 32px 0 !important;
+  }
+  .shlyah-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #000 !important;
+    width: 100% !important;
+    padding: 12px 32px !important;
+    border: 0 !important;
+    font-size: 14px !important;
+    border-radius: 50px !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+  }
+  .disabled {
+    color: rgba(0, 0, 0, 0.2) !important;
+    pointer-events: none !important;
+  }
+  .form-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px !important;
+    width: 100% !important;
+    font-size: 12px !important;
+    gap: 6px;
+    background-color: #fff4d7 !important;
+  }
+  .warning {
+    color: red;
+  }
+
+  .shlyah-btn.loader::after {
+    content: "";
+    display: block;
+    margin-left: 24px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<div class="zayava-info">
+  <h3>Формування заяви</h3>
+  <div class="fildset">
+    <div class="form_page_button">
+      <button
+        class="shlyah-btn"
+        type="button"
+        onclick="
+        (async () => {
+        this.classList.add('loader');
+        this.disabled = true;
+        const form = document.querySelector('form');
+                    const formData = new FormData(form);
+                    const formEntries = formData.entries();
+                    const formEntriesArray = Array.from(formEntries);
+
+                    const formEntriesArrayWithRenamedKeys = formEntriesArray.filter(entry => {
+                        const [key, value] = entry;
+
+                        return (key.includes('[fields]') || value.includes('file')) && !key.includes('temp');
+                    }).map(
+                        (entry) => {
+                            const [key, value] = entry;
+
+                            const input = form.querySelector(`[name='${key}']`);
+
+                            const className = input.closest('.wpforms-field').className.split(' ').find(className => className.includes('-wpname'));
+                            if (!className) {
+                                return entry;
+                            }
+                            const newName = className.split('-wpname').join('');
+
+                            return [newName, value]
+
+
+                        }
+                    );
+                    const newData = {}
+                    formEntriesArrayWithRenamedKeys.forEach(entry => {
+                        const [key, value] = entry;
+                        if (newData[key]) {
+                            newData[key] = newData[key] + ', ' + value;
+                            return;
+                        }
+                        newData[key] = value;
+                    })
+      
+                    const data = JSON.stringify(newData);
+                    const response = await fetch(`https://dopomoha.carpathia.gov.ua/api/credit-compensation/create-pdf`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: data,
+                    });
+                    if (!response.ok) {
+                        this.classList.remove('loader');
+                        this.disabled = false;
+                        alert('Помилка при генерації заяви, перевірте правильність введених даних');
+                        return;
+                    }
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'zayava.pdf';
+                    a.click();
+                    this.classList.remove('loader');
+                    this.disabled = false;
+        }
+        )();
+      "
+      >
+        Згенерувати заяву
+      </button>
+      <a
+        href="https://diia.gov.ua/services/pidpisannya-dokumentiv"
+        target="_blank"
+        id="pidpusaty-klopoyanya"
+        class="shlyah-btn"
+        >Підписати згенеровану заяву</a
+      >
+    </div>
+
+    <div style="margin-top: 2000px" class="form-alert">
+      <p class="warning">
+        УВАГА! ЛИСТ-КЛОПОТАННЯ ПОВИНЕН БУТИ ПІДПИСАНИЙ КЕРІВНИКОМ ОРГАНІЗАЦІЇ,
+        УСТАНОВИ ТОЩО
+      </p>
+      <p class="warning">
+        УВАГА! ЯКЩО ЗАЯВА НЕ ГЕНЕРУЄТЬСЯ, ПЕРЕВІРТЕ ПРАВИЛЬНІСТЬ ВВЕДЕНИХ ДАНИХ
+      </p>
+      <p>
+        Інструкція для підписання заяви КЕПом -
+        <a href="https://www.youtube.com/watch?v=hWrNI9chjHo">переглянути</a>
+      </p>
+    </div>
+
+    <script src="./scroll.js"></script>
+  </div>
+</div>

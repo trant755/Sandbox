@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    /* styles for table info */
+    .table-info__wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      min-width: 320px;
+
+      font-family: Arial, sans-serif;
+
+      border: 2px solid #ccc;
+      border-radius: 20px;
+      padding: 70px 40px;
+      gap: 20px;
+    }
+
+    .table-info {
+    }
+
+    .table-info h1 {
+      font-size: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .table-info p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .table-info ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .table-info li {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* styles for download button */
+    #download-table {
+      padding: 14px 24px;
+      background-color: #000;
+      color: #fff;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    #download-table:hover {
+      opacity: 1;
+    }
+  </style>
+  <body>
+    <!-- container whith info about table and button too download table -->
+    <div class="table-info__wrapper">
+      <div class="table-info">
+        <h1>Таблиця</h1>
+        <p>Тут ви зможете завантажити таблицю з данними</p>
+      </div>
+      <button id="download-table">Завантажити таблицю</button>
+    </div>
+    <script src="./tablePage.js"></script>
+  </body>
+</html>
