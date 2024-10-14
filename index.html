@@ -117,44 +117,51 @@
       let isDragging = false;
       let offsetX, offsetY;
 
-      draggable.addEventListener("mousedown", (event) => {
-        isDragging = true;
-        offsetX = event.clientX - draggable.offsetLeft;
-        offsetY = event.clientY - draggable.offsetTop;
-        draggable.style.cursor = "grabbing";
-      });
+      draggable.addEventListener('mousedown', (event) => startDrag(event));
+  document.addEventListener('mousemove', (event) => drag(event));
+  document.addEventListener('mouseup', () => endDrag());
 
-      document.addEventListener("mousemove", (event) => {
-        if (isDragging) {
-          // Новые координаты элемента с учётом смещения курсора
-          let newLeft = event.clientX - offsetX;
-          let newTop = event.clientY - offsetY;
+  // Обработчики для сенсорных устройств
+  draggable.addEventListener('touchstart', (event) => startDrag(event.touches[0]));
+  document.addEventListener('touchmove', (event) => drag(event.touches[0]));
+  document.addEventListener('touchend', () => endDrag());
 
-          // Границы контейнера
-          const wrapperRect = wrapper.getBoundingClientRect();
-          const draggableRect = draggable.getBoundingClientRect();
+  function startDrag(event) {
+    isDragging = true;
+    offsetX = event.clientX - draggable.offsetLeft;
+    offsetY = event.clientY - draggable.offsetTop;
+    draggable.style.cursor = 'grabbing';
+  }
 
-          // Проверяем и ограничиваем координаты в пределах контейнера
-          if (newLeft < 0) newLeft = 0;
-          if (newTop < 0) newTop = 0;
-          if (newLeft + draggableRect.width > wrapperRect.width) {
-            newLeft = wrapperRect.width - draggableRect.width;
-          }
-          if (newTop + draggableRect.height > wrapperRect.height) {
-            newTop = wrapperRect.height - draggableRect.height;
-          }
+  function drag(event) {
+    if (isDragging) {
+      let newLeft = event.clientX - offsetX;
+      let newTop = event.clientY - offsetY;
 
-          // Устанавливаем новые координаты
-          draggable.style.left = `${newLeft}px`;
-          draggable.style.top = `${newTop}px`;
-          updatePath(newLeft, newTop);
-        }
-      });
+      // Границы контейнера
+      const containerRect = container.getBoundingClientRect();
+      const draggableRect = draggable.getBoundingClientRect();
 
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-        draggable.style.cursor = "grab";
-      });
+      // Ограничение перемещения
+      if (newLeft < 0) newLeft = 0;
+      if (newTop < 0) newTop = 0;
+      if (newLeft + draggableRect.width > containerRect.width) {
+        newLeft = containerRect.width - draggableRect.width;
+      }
+      if (newTop + draggableRect.height > containerRect.height) {
+        newTop = containerRect.height - draggableRect.height;
+      }
+
+      // Устанавливаем новые координаты
+      draggable.style.left = `${newLeft}px`;
+      draggable.style.top = `${newTop}px`;
+    }
+  }
+
+  function endDrag() {
+    isDragging = false;
+    draggable.style.cursor = 'grab';
+  }
 
       const changeSizeButton = document.getElementById("changeSize");
       changeSizeButton.addEventListener("click", () => {
