@@ -89,18 +89,18 @@
 
         // Пример вычисления нового пути на основе ширины и высоты
         const newPath = `
-        M ${width / 1} 0
-        L ${top < 1 ? width + radius : width - radius} 0
-        Q ${width} 0 ${width} ${right < 1 ? -radius : radius}
-        L ${width} ${right < 1 ? height + radius : height - radius}
-        Q ${width} ${height} ${
+              M ${width / 1} 0
+              L ${top < 1 ? width + radius : width - radius} 0
+              Q ${width} 0 ${width} ${right < 1 ? -radius : radius}
+              L ${width} ${right < 1 ? height + radius : height - radius}
+              Q ${width} ${height} ${
           bottom < 1 ? width + radius : width - radius
         } ${height}
-        L ${bottom < 1 ? -radius : radius} ${height}
-        Q 0 ${height} 0 ${left < 1 ? height + radius : height - radius}
-        L 0 ${left < 1 ? -radius : radius}
-        Q 0 0 ${top < 1 ? -radius : radius} 0
-      `;
+              L ${bottom < 1 ? -radius : radius} ${height}
+              Q 0 ${height} 0 ${left < 1 ? height + radius : height - radius}
+              L 0 ${left < 1 ? -radius : radius}
+              Q 0 0 ${top < 1 ? -radius : radius} 0
+            `;
 
         // Применяем новый путь к SVG
         document.getElementById("dynamicPath").setAttribute("d", newPath);
@@ -169,6 +169,7 @@
         isDragging = false;
         draggable.style.cursor = "grab";
       }
+
       const changeSizeButton = document.getElementById("changeSize");
       changeSizeButton.addEventListener("click", () => {
         const randomSize = [
