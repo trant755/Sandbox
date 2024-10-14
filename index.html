@@ -78,7 +78,7 @@
       // Получаем размеры контейнера
       const wrapper = document.querySelector(".wrapper");
 
-      function updatePath(left, top) {
+      function updatePath(left, top, radius = 20) {
         const container = document.querySelector(".container");
         const wrapperWidth = wrapper.offsetWidth;
         const wrapperHeight = wrapper.offsetHeight;
@@ -89,15 +89,17 @@
 
         // Пример вычисления нового пути на основе ширины и высоты
         const newPath = `
-        M ${width / 2} 0
-        L ${top < 2 ? width + 20 : width - 20} 0
-        Q ${width} 0 ${width} ${right < 2 ? -20 : 20}
-        L ${width} ${right < 2 ? height + 20 : height - 20}
-        Q ${width} ${height} ${bottom < 2 ? width + 20 : width - 20} ${height}
-        L ${bottom < 2 ? -20 : 20} ${height}
-        Q 0 ${height} 0 ${left < 2 ? height + 20 : height - 20}
-        L 0 ${left < 2 ? -20 : 20}
-        Q 0 0 ${top < 2 ? -20 : 20} 0
+        M ${width / 1} 0
+        L ${top < 1 ? width + radius : width - radius} 0
+        Q ${width} 0 ${width} ${right < 1 ? -radius : radius}
+        L ${width} ${right < 1 ? height + radius : height - radius}
+        Q ${width} ${height} ${
+          bottom < 1 ? width + radius : width - radius
+        } ${height}
+        L ${bottom < 1 ? -radius : radius} ${height}
+        Q 0 ${height} 0 ${left < 1 ? height + radius : height - radius}
+        L 0 ${left < 1 ? -radius : radius}
+        Q 0 0 ${top < 1 ? -radius : radius} 0
       `;
 
         // Применяем новый путь к SVG
@@ -117,45 +119,56 @@
       let isDragging = false;
       let offsetX, offsetY;
 
-      draggable.addEventListener("mousedown", (event) => {
+      draggable.addEventListener("mousedown", (event) => startDrag(event));
+      document.addEventListener("mousemove", (event) => drag(event));
+      document.addEventListener("mouseup", () => endDrag());
+
+      // Обработчики для сенсорных устройств
+      draggable.addEventListener("touchstart", (event) =>
+        startDrag(event.touches[0])
+      );
+      document.addEventListener("touchmove", (event) => drag(event.touches[0]));
+      document.addEventListener("touchend", () => endDrag());
+
+      function startDrag(event) {
         isDragging = true;
         offsetX = event.clientX - draggable.offsetLeft;
         offsetY = event.clientY - draggable.offsetTop;
         draggable.style.cursor = "grabbing";
-      });
+      }
 
-      document.addEventListener("mousemove", (event) => {
+      function drag(event) {
         if (isDragging) {
-          // Новые координаты элемента с учётом смещения курсора
           let newLeft = event.clientX - offsetX;
           let newTop = event.clientY - offsetY;
 
           // Границы контейнера
-          const wrapperRect = wrapper.getBoundingClientRect();
+          const containerRect = wrapper.getBoundingClientRect();
           const draggableRect = draggable.getBoundingClientRect();
 
-          // Проверяем и ограничиваем координаты в пределах контейнера
+          // Ограничение перемещения
           if (newLeft < 0) newLeft = 0;
           if (newTop < 0) newTop = 0;
-          if (newLeft + draggableRect.width > wrapperRect.width) {
-            newLeft = wrapperRect.width - draggableRect.width;
+          if (newLeft + draggableRect.width > containerRect.width) {
+            newLeft = containerRect.width - draggableRect.width;
           }
-          if (newTop + draggableRect.height > wrapperRect.height) {
-            newTop = wrapperRect.height - draggableRect.height;
+          if (newTop + draggableRect.height > containerRect.height) {
+            newTop = containerRect.height - draggableRect.height;
           }
 
           // Устанавливаем новые координаты
           draggable.style.left = `${newLeft}px`;
           draggable.style.top = `${newTop}px`;
+
+          // Обновляем путь
           updatePath(newLeft, newTop);
         }
-      });
+      }
 
-      document.addEventListener("mouseup", () => {
+      function endDrag() {
         isDragging = false;
         draggable.style.cursor = "grab";
-      });
-
+      }
       const changeSizeButton = document.getElementById("changeSize");
       changeSizeButton.addEventListener("click", () => {
         const randomSize = [
